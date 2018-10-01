@@ -112,6 +112,7 @@ txt file with single label index eg:
 2.configuration
 
 3.train
+
 	python3 image_classification_train.py
 
 ### Inference
