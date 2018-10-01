@@ -38,7 +38,7 @@ Python3 support only. Tested on CUDA9.0, cudnn7.
 | pnasnet                 | 331       |
 | ...                     | ...       |
 
-### pre-train model
+### pre-trained model
 you can download pretrain model with url in ($net-module.py)
 
 #### From [torchvision](https://github.com/pytorch/vision/) package:
