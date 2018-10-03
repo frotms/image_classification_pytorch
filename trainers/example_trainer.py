@@ -84,7 +84,10 @@ class ExampleTrainer(BaseTrainer):
         :param label: 
         :return: 
         """
-        return self.criterion(pred, label)
+        criterion = nn.CrossEntropyLoss()  # nn.MSELoss()
+        if torch.cuda.is_available():
+            criterion.cuda()
+        return criterion(pred, label)
 
 
     def create_optimization(self):
@@ -92,10 +95,6 @@ class ExampleTrainer(BaseTrainer):
         optimizer
         :return: 
         """
-        self.criterion = nn.CrossEntropyLoss()  # nn.MSELoss()
-        if torch.cuda.is_available():
-            self.criterion.cuda()
-
         self.optimizer = torch.optim.Adam(self.model.net.parameters(),
                                           lr=self.config['learning_rate'], weight_decay=0) #lr:1e-4
         if torch.cuda.device_count() > 1:
