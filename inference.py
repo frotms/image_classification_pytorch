@@ -58,7 +58,9 @@ class TagPytorchInference(object):
         input = input.view(-1,_size[0],_size[1],_size[2])
         if torch.cuda.is_available():
             input = input.cuda()
-        infer = self.net(Variable(input))
+        logit = self.net(Variable(input))
+        # softmax
+        infer = F.softmax(logit)
         return infer.data.cpu().numpy().tolist()
 
 
