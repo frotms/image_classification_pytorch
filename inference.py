@@ -60,7 +60,7 @@ class TagPytorchInference(object):
             input = input.cuda()
         logit = self.net(Variable(input))
         # softmax
-        infer = F.softmax(logit)
+        infer = F.softmax(logit, 1)
         return infer.data.cpu().numpy().tolist()
 
 
