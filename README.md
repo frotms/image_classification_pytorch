@@ -113,7 +113,7 @@ txt file with single label index eg:
 
 3.train
 
-	python3 image_classification_train.py
+	python3 train.py
 
 ### Inference
 eg: trained by inception_resnet_v2, vgg/data/flowers/102:
