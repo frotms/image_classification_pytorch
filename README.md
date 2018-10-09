@@ -36,6 +36,7 @@ Python3 support only. Tested on CUDA9.0, cudnn7.
 | senet                   | 224       |
 | squeezenet              | 224       |
 | pnasnet                 | 331       |
+| shuffleV2               | 224       |
 | ...                     | ...       |
 
 ### pre-trained model
@@ -64,6 +65,9 @@ you can download pretrain model with url in ($net-module.py)
 
 #### From [mobilenetV2](https://github.com/ericsun99/MobileNet-V2-Pytorch) package:
 - Mobilenet V2 (`mobilenet_v2`)
+
+#### From [shufflenetV2](https://github.com/ericsun99/Shufflenet-v2-Pytorch) package:
+- Shufflenet V2 (`shufflenet_v2`)
 
 ## usage
 
@@ -127,18 +131,12 @@ eg: trained by inception_resnet_v2, vgg/data/flowers/102:
 logdir is log dir in your project dir 
 
 ## References
-1.[https://github.com/pytorch](https://github.com/pytorch)
-
-2.[https://github.com/victoresque/pytorch-template](https://github.com/victoresque/pytorch-template)
-
-3.[https://pytorch.org](https://pytorch.org)
-
-5.[https://github.com/yunjey/pytorch-tutorial](https://github.com/yunjey/pytorch-tutorial)
-
-4.[https://www.tensorflow.org](https://www.tensorflow.org)
-
-5.[https://github.com/Cadene/pretrained-models.pytorch/tree/master/pretrainedmodels/models](https://github.com/Cadene/pretrained-models.pytorch/tree/master/pretrainedmodels/models)
-
-6.[https://github.com/ericsun99/MobileNet-V2-Pytorch](https://github.com/ericsun99/MobileNet-V2-Pytorch)
-
-7.[http://www.robots.ox.ac.uk/~vgg/data/flowers/102](http://www.robots.ox.ac.uk/~vgg/data/flowers/102)
+1.[https://github.com/pytorch](https://github.com/pytorch)  
+2.[https://github.com/victoresque/pytorch-template](https://github.com/victoresque/pytorch-template)  
+3.[https://pytorch.org](https://pytorch.org)  
+5.[https://github.com/yunjey/pytorch-tutorial](https://github.com/yunjey/pytorch-tutorial)  
+4.[https://www.tensorflow.org](https://www.tensorflow.org)  
+5.[https://github.com/Cadene/pretrained-models.pytorch/tree/master/pretrainedmodels/models](https://github.com/Cadene/pretrained-models.pytorch/tree/master/pretrainedmodels/models)  
+6.[https://github.com/ericsun99/MobileNet-V2-Pytorch](https://github.com/ericsun99/MobileNet-V2-Pytorch)  
+7.[http://www.robots.ox.ac.uk/~vgg/data/flowers/102](http://www.robots.ox.ac.uk/~vgg/data/flowers/102)  
+8.[https://github.com/ericsun99/Shufflenet-v2-Pytorch](https://github.com/ericsun99/Shufflenet-v2-Pytorch)  
