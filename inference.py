@@ -15,6 +15,7 @@ import torch
 from torch.autograd import Variable
 import torchvision.transforms as transforms
 from importlib import import_module
+from PIL import Image
 
 class TagPytorchInference(object):
 
@@ -55,7 +56,7 @@ class TagPytorchInference(object):
         _image_data = self.image_preproces(image_data)
         input = self.transforms(_image_data)
         _size = input.size()
-        input = input.view(-1,_size[0],_size[1],_size[2])
+        input = input.resize_(1, _size[0], _size[1], _size[2])
         if torch.cuda.is_available():
             input = input.cuda()
         logit = self.net(Variable(input))
@@ -67,7 +68,8 @@ class TagPytorchInference(object):
     def image_preproces(self, image_data):
         _image = cv2.resize(image_data, self.input_size)
         _image = _image[:,:,::-1]   # bgr2rgb
-        _image = (_image*1.0 - 127) * 0.0078125 # 1/128
+        _image = Image.fromarray(_image).convert('RGB')
+        # _image = (_image*1.0 - 127) * 0.0078125 # 1/128
         return _image.astype(np.float32)
 
 
