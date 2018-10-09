@@ -1,12 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-##########################################################
-# breif:
-#
-# usage:
-# copyright:            (c) 2017-2018 svaxm
-# version:
-##########################################################
 
 import os
 import numpy as np
