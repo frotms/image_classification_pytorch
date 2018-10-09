@@ -36,7 +36,7 @@ Python3 support only. Tested on CUDA9.0, cudnn7.
 | senet                   | 224       |
 | squeezenet              | 224       |
 | pnasnet                 | 331       |
-| shuffleV2               | 224       |
+| shufflenetV2            | 224       |
 | ...                     | ...       |
 
 ### pre-trained model
