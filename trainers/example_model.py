@@ -65,8 +65,8 @@ class ExampleModel(BaseModel):
             state_dict[name] = value
         # for handling in case of different models compared to the saved pretrain-weight
         model_dict = self.net.state_dict()
-        diff = {k: v for k, v in model_dict.items() if \
-                k in state_dict and state_dict[k].size() != v.size()}
+        diff = {k: v for k, v in state_dict.items() if \
+                k in model_dict and model_dict[k].size() != v.size()}
         print('diff: ', [i for i, v in diff.items()])
-        model_dict.update(diff)
-        self.net.load_state_dict(model_dict)
+        state_dict.update(diff)
+        self.net.load_state_dict(state_dict)
