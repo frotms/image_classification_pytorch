@@ -5,10 +5,10 @@ import os
 import numpy as np
 import cv2
 import torch
+import torch.nn.functional as F
 from torch.autograd import Variable
 import torchvision.transforms as transforms
 from importlib import import_module
-from PIL import Image
 
 class TagPytorchInference(object):
 
@@ -20,6 +20,7 @@ class TagPytorchInference(object):
         os.environ["CUDA_VISIBLE_DEVICES"] = self.gpu_index
         self.net = self._create_model(**kwargs)
         self._load(**kwargs)
+        self.net.eval()
         self.transforms = transforms.ToTensor()
         if torch.cuda.is_available():
             self.net.cuda()
@@ -45,7 +46,6 @@ class TagPytorchInference(object):
 
 
     def run(self, image_data, **kwargs):
-        self.net.eval()
         _image_data = self.image_preproces(image_data)
         input = self.transforms(_image_data)
         _size = input.size()
@@ -61,10 +61,7 @@ class TagPytorchInference(object):
     def image_preproces(self, image_data):
         _image = cv2.resize(image_data, self.input_size)
         _image = _image[:,:,::-1]   # bgr2rgb
-        _image = Image.fromarray(_image).convert('RGB')
-        # _image = (_image*1.0 - 127) * 0.0078125 # 1/128
-        return _image.astype(np.float32)
-
+        return _image.copy()
 
 if __name__ == "__main__":
     # # python3 inference.py --image test.jpg --module inception_resnet_v2_module --net inception_resnet_v2 --model model.pth
