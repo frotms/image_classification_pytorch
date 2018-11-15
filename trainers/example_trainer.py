@@ -180,14 +180,15 @@ class ExampleTrainer(BaseTrainer):
         :param labels: 
         :return: 
         """
-        infer = self.model.net(images)
-        # label to one_hot
-        # ids = labels.long().view(-1, 1)
-        # one_hot_labels = torch.zeros(32, 2).scatter_(dim=1, index=ids, value=1.)
+        with torch.no_grad():
+            infer = self.model.net(images)
+            # label to one_hot
+            # ids = labels.long().view(-1, 1)
+            # one_hot_labels = torch.zeros(32, 2).scatter_(dim=1, index=ids, value=1.)
 
-        # Loss function
-        losses = self.get_loss(infer, labels)
-        loss = losses.item()#losses.data[0]
+            # Loss function
+            losses = self.get_loss(infer, labels)
+            loss = losses.item()#losses.data[0]
 
         # measure accuracy and record loss
         prec1, prec5 = self.compute_accuracy(infer.data, labels.data, topk=(1, 5))
