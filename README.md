@@ -71,7 +71,7 @@ you can download pretrain model with url in ($net-module.py)
 - Shufflenet V2 (`shufflenet_v2`)
 
 #### From [MnasNet](https://github.com/billhhh/MnasNet-pytorch-pretrained) package:
-- Mnasnet (`MnasNet`)
+- MnasNet (`MnasNet`)
 
 ## usage
 
