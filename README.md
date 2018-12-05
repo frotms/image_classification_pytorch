@@ -37,6 +37,7 @@ Python3 support only. Tested on CUDA9.0, cudnn7.
 | squeezenet              | 224       |
 | pnasnet                 | 331       |
 | shufflenetV2            | 224       |
+| mnasnet                 | 224       |
 | ...                     | ...       |
 
 ### pre-trained model
@@ -68,6 +69,9 @@ you can download pretrain model with url in ($net-module.py)
 
 #### From [shufflenetV2](https://github.com/ericsun99/Shufflenet-v2-Pytorch) package:
 - Shufflenet V2 (`shufflenet_v2`)
+
+#### From [MnasNet](https://github.com/billhhh/MnasNet-pytorch-pretrained) package:
+- Mnasnet (`MnasNet`)
 
 ## usage
 
@@ -140,3 +144,4 @@ logdir is log dir in your project dir
 6.[https://github.com/ericsun99/MobileNet-V2-Pytorch](https://github.com/ericsun99/MobileNet-V2-Pytorch)  
 7.[http://www.robots.ox.ac.uk/~vgg/data/flowers/102](http://www.robots.ox.ac.uk/~vgg/data/flowers/102)  
 8.[https://github.com/ericsun99/Shufflenet-v2-Pytorch](https://github.com/ericsun99/Shufflenet-v2-Pytorch)  
+9.[https://github.com/billhhh/MnasNet-pytorch-pretrained](https://github.com/billhhh/MnasNet-pytorch-pretrained)
