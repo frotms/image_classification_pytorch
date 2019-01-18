@@ -134,6 +134,13 @@ eg: trained by inception_resnet_v2, vgg/data/flowers/102:
 
 logdir is log dir in your project dir 
 
+
+## Updates and ToDo
+- [] update to pytorch 1.0 and update the other requirements
+- [] test the performance
+- [] add multi-label training 
+- [] add some training tricks
+
 ## References
 1.[https://github.com/pytorch](https://github.com/pytorch)  
 2.[https://github.com/victoresque/pytorch-template](https://github.com/victoresque/pytorch-template)  
@@ -145,3 +152,4 @@ logdir is log dir in your project dir
 7.[http://www.robots.ox.ac.uk/~vgg/data/flowers/102](http://www.robots.ox.ac.uk/~vgg/data/flowers/102)  
 8.[https://github.com/ericsun99/Shufflenet-v2-Pytorch](https://github.com/ericsun99/Shufflenet-v2-Pytorch)  
 9.[https://github.com/billhhh/MnasNet-pytorch-pretrained](https://github.com/billhhh/MnasNet-pytorch-pretrained)
+10.[https://github.com/frotms/image_classification_pytorch](https://github.com/frotms/image_classification_pytorch)
