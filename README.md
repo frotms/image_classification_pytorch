@@ -136,10 +136,11 @@ logdir is log dir in your project dir
 
 
 ## Updates and ToDo
-- [] update to pytorch 1.0 and update the other requirements
-- [] test the performance
-- [] add multi-label training 
-- [] add some training tricks
+- [x] add the mnasnet
+- [ ] update to pytorch 1.0 and update the other requirements
+- [ ] test the performance
+- [ ] add multi-label training 
+- [ ] add some training tricks
 
 ## References
 1.[https://github.com/pytorch](https://github.com/pytorch)  
@@ -151,5 +152,5 @@ logdir is log dir in your project dir
 6.[https://github.com/ericsun99/MobileNet-V2-Pytorch](https://github.com/ericsun99/MobileNet-V2-Pytorch)  
 7.[http://www.robots.ox.ac.uk/~vgg/data/flowers/102](http://www.robots.ox.ac.uk/~vgg/data/flowers/102)  
 8.[https://github.com/ericsun99/Shufflenet-v2-Pytorch](https://github.com/ericsun99/Shufflenet-v2-Pytorch)  
-9.[https://github.com/billhhh/MnasNet-pytorch-pretrained](https://github.com/billhhh/MnasNet-pytorch-pretrained)
+9.[https://github.com/billhhh/MnasNet-pytorch-pretrained](https://github.com/billhhh/MnasNet-pytorch-pretrained)    
 10.[https://github.com/frotms/image_classification_pytorch](https://github.com/frotms/image_classification_pytorch)
