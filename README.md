@@ -140,7 +140,7 @@ logdir is log dir in your project dir
 - [ ] update to pytorch 1.0 and update the other requirements
 - [ ] test the performance
 - [ ] add multi-label training 
-- [ ] add some training tricks ([Bag of Tricks for Image Classification with Convolutional Neural Networks](https://arxiv.org/pdf/1812.01187.pdf))
+- [ ] add some training tricks (focal loss and [Bag of Tricks for Image Classification with Convolutional Neural Networks](https://arxiv.org/pdf/1812.01187.pdf))
 - [ ] choose the best model in training process by validation score
 - [ ] add K-fold cross-validation to train K models 
 - [ ] add TTA and model ensemble
