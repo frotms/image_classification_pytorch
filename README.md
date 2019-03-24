@@ -16,7 +16,9 @@ Python3 support only. Tested on CUDA9.0, cudnn7.
 * torch==0.4.1
 * torchvision==0.2.1
 
-## model
+Higher versions of libraries should also work.
+
+## Models
 | net                     | inputsize |
 |-------------------------|-----------|
 | vggnet                  | 224       |
@@ -43,7 +45,7 @@ Python3 support only. Tested on CUDA9.0, cudnn7.
 ### pre-trained model
 you can download pretrain model with url in ($net-module.py)
 
-#### From [torchvision](https://github.com/pytorch/vision/) package:
+#### from [torchvision](https://github.com/pytorch/vision/) package:
 
 - ResNet (`resnet18`, `resnet34`, `resnet50`, `resnet101`, `resnet152`)
 - DenseNet (`densenet121`, `densenet169`, `densenet201`, `densenet161`)
@@ -52,7 +54,7 @@ you can download pretrain model with url in ($net-module.py)
 - SqueezeNet (`squeezenet1_0`, `squeezenet1_1`)
 - AlexNet (`alexnet`)
 
-#### From [Pretrained models for PyTorch](https://github.com/Cadene/pretrained-models.pytorch) package:
+#### from [Pretrained models for PyTorch](https://github.com/Cadene/pretrained-models.pytorch) package:
 - ResNeXt (`resnext101_32x4d`, `resnext101_64x4d`)
 - NASNet-A Large (`nasnet_a_large`)
 - NASNet-A Mobile (`nasnet_a_mobile`)
@@ -64,16 +66,20 @@ you can download pretrain model with url in ($net-module.py)
 - PNASNet-5-Large (`pnasnet_5_large`)
 - PolyNet (`polynet`)
 
-#### From [mobilenetV2](https://github.com/ericsun99/MobileNet-V2-Pytorch) package:
+#### from [mobilenetV2](https://github.com/ericsun99/MobileNet-V2-Pytorch) package:
 - Mobilenet V2 (`mobilenet_v2`)
 
-#### From [shufflenetV2](https://github.com/ericsun99/Shufflenet-v2-Pytorch) package:
+#### from [shufflenetV2](https://github.com/ericsun99/Shufflenet-v2-Pytorch) package:
 - Shufflenet V2 (`shufflenet_v2`)
 
-#### From [MnasNet](https://github.com/billhhh/MnasNet-pytorch-pretrained) package:
+#### from [MnasNet](https://github.com/billhhh/MnasNet-pytorch-pretrained) package:
 - MnasNet (`MnasNet`)
 
-## usage
+#### more
+- There are also some modules you can get in [torchcv](https://github.com/osmr/imgclsmob/tree/master/pytorch) lib.
+
+
+## Usage
 
 ### configuration
 | configure                       | description                                                               |
@@ -107,7 +113,7 @@ you can download pretrain model with url in ($net-module.py)
 | train_data_file                 | a txt filename which has training data and label list                     |
 | val_data_file                   | a txt filename which has testing data and label list                      |
 
-### Training
+### training
 1.make your training &. testing data and label list with txt file:
 
 txt file with single label index eg:
@@ -123,7 +129,7 @@ txt file with single label index eg:
 
 	python3 train.py
 
-### Inference
+### inference
 eg: trained by inception_resnet_v2, vgg/data/flowers/102:
 
 	python3 inference.py --image test.jpg --module inception_resnet_v2_module --net inception_resnet_v2 --model model.pth --size 299 --cls 102
