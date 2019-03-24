@@ -162,4 +162,5 @@ logdir is log dir in your project dir
 7.[http://www.robots.ox.ac.uk/~vgg/data/flowers/102](http://www.robots.ox.ac.uk/~vgg/data/flowers/102)  
 8.[https://github.com/ericsun99/Shufflenet-v2-Pytorch](https://github.com/ericsun99/Shufflenet-v2-Pytorch)  
 9.[https://github.com/billhhh/MnasNet-pytorch-pretrained](https://github.com/billhhh/MnasNet-pytorch-pretrained)    
-10.[https://github.com/frotms/image_classification_pytorch](https://github.com/frotms/image_classification_pytorch)
+10.[https://github.com/frotms/image_classification_pytorch](https://github.com/frotms/image_classification_pytorch)    
+11.[https://github.com/osmr/imgclsmob/tree/master/pytorch](https://github.com/osmr/imgclsmob/tree/master/pytorch)
