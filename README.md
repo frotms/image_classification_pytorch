@@ -150,6 +150,7 @@ logdir is log dir in your project dir
 - [ ] increase the frequence of testing, then choose the best model in training process by validation score
 - [ ] add K-fold cross-validation to train K models 
 - [ ] add TTA and model ensemble
+- [ ] https://github.com/osmr/imgclsmob/tree/master/pytorch: A really good pytorch pretraiend models collection
 
 ## References
 1.[https://github.com/pytorch](https://github.com/pytorch)  
