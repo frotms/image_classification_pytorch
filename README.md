@@ -38,6 +38,8 @@ Python3 support only. Tested on CUDA9.0, cudnn7.
 | pnasnet                 | 331       |
 | shufflenetV2            | 224       |
 | mnasnet                 | 224       |
+| mobilenetV3             | 224       |
+| oct-resnet              | 224/256   |
 | ...                     | ...       |
 
 ### pre-trained model
@@ -71,14 +73,20 @@ you can download pretrain model with url in ($net-module.py)
 - Shufflenet V2 ([shufflenet_v2](https://github.com/ericsun99/Shufflenet-v2-Pytorch))
 
 #### From [MnasNet](https://github.com/billhhh/MnasNet-pytorch-pretrained) package:
-- Mnasnet ([MnasNet](https://github.com/billhhh/MnasNet-pytorch-pretrained))
+- Mnasnet ([MnasNet](https://github.com/billhhh/MnasNet-pytorch-pretrained))  
+
+#### From [mobilenetV3](https://github.com/kuan-wang/pytorch-mobilenet-v3) package:
+- Mobilenet V3 ([mobilenet_v3_large](https://github.com/kuan-wang/pytorch-mobilenet-v3), [mobilenet_v3_small](https://github.com/kuan-wang/pytorch-mobilenet-v3))  
+
+#### From [OctaveResnet](https://github.com/d-li14/octconv.pytorch) package:
+- Octave Resnet ([oct_resnet26](https://github.com/d-li14/octconv.pytorch), [oct_resnet50](https://github.com/d-li14/octconv.pytorch), [oct_resnet101](https://github.com/d-li14/octconv.pytorch), [oct_resnet152](https://github.com/d-li14/octconv.pytorch), [oct_resnet200](https://github.com/d-li14/octconv.pytorch))  
 
 ## usage
 
 ### configuration
 | configure                       | description                                                               |
 |---------------------------------|---------------------------------------------------------------------------|
-| model_module_name               | eg: vgg_module                                                             |
+| model_module_name               | eg: vgg_module                                                            |
 | model_net_name                  | net function name in module, eg:vgg16                                     |
 | gpu_id                          | eg: single GPU: "0", multi-GPUs:"0,1,3,4,7"                                                           |
 | async_loading                   | make an asynchronous copy to the GPU                                      |
@@ -144,4 +152,6 @@ logdir is log dir in your project dir
 6.[https://github.com/ericsun99/MobileNet-V2-Pytorch](https://github.com/ericsun99/MobileNet-V2-Pytorch)  
 7.[http://www.robots.ox.ac.uk/~vgg/data/flowers/102](http://www.robots.ox.ac.uk/~vgg/data/flowers/102)  
 8.[https://github.com/ericsun99/Shufflenet-v2-Pytorch](https://github.com/ericsun99/Shufflenet-v2-Pytorch)  
-9.[https://github.com/billhhh/MnasNet-pytorch-pretrained](https://github.com/billhhh/MnasNet-pytorch-pretrained)
+9.[https://github.com/billhhh/MnasNet-pytorch-pretrained](https://github.com/billhhh/MnasNet-pytorch-pretrained)  
+10.[https://github.com/d-li14/octconv.pytorch](https://github.com/d-li14/octconv.pytorch)  
+11.[https://github.com/kuan-wang/pytorch-mobilenet-v3](https://github.com/kuan-wang/pytorch-mobilenet-v3)  
