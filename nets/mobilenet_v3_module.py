@@ -186,7 +186,6 @@ class MobileNetV3(nn.Module):
             last_conv = make_divisible(960 * width_mult)
             self.features.append(conv_1x1_bn(input_channel, last_conv, nlin_layer=Hswish))
             self.features.append(nn.AdaptiveAvgPool2d(1))
-            self.features.append(Hswish(inplace=True))
             self.features.append(nn.Conv2d(last_conv, last_channel, 1, 1, 0))
             self.features.append(Hswish(inplace=True))
             self.features.append(nn.Conv2d(last_channel, num_classes, 1, 1, 0))
@@ -195,9 +194,9 @@ class MobileNetV3(nn.Module):
             self.features.append(conv_1x1_bn(input_channel, last_conv, nlin_layer=Hswish))
             self.features.append(SEModule(last_conv))  # refer to paper Table2
             self.features.append(nn.AdaptiveAvgPool2d(1))
+            self.features.append(nn.Conv2d(last_conv, last_channel, 1, 1, 0))
             self.features.append(Hswish(inplace=True))
-            self.features.append(conv_1x1_bn(last_conv, last_channel, nlin_layer=Hswish))
-            self.features.append(conv_1x1_bn(last_channel, num_classes, nlin_layer=Hswish))
+            self.features.append(nn.Conv2d(last_channel, num_classes, 1, 1, 0))
         else:
             raise NotImplementedError
 
