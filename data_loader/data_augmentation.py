@@ -16,9 +16,9 @@ class DataAugmenters:
     def _example(self,image,**kwargs):
         """
         example
-        :param image: 
-        :param kwargs: 
-        :return: 
+        :param image:
+        :param kwargs:
+        :return:
         """
         return image
 
@@ -26,9 +26,9 @@ class DataAugmenters:
     def run(self,image,**kwargs):
         """
         augment your image data
-        :param image: 
-        :param kwargs: 
-        :return: 
+        :param image:
+        :param kwargs:
+        :return:
         """
         data = {'image': image}
         augmented = self.augmentation(**data)

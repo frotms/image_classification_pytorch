@@ -1,0 +1,124 @@
+version: v0.0.0
+protocol_code: preserve
+info:
+  task: img_cls
+  deep_learning_framework: preserve
+
+modeler:
+  model:
+    num_classes: 102
+    labels: []
+    mean: 128.0
+    std: 128.0
+    img_size_h: 224
+    img_size_w: 224
+    img_size_c: 3
+    range_width: [224, 224]
+    range_division: 1
+    wh_equal: true
+    is_rgb_model: true
+    resize_cfg:
+      resize_type: enforce
+      fill_value: 128
+    node:
+      input_node: Placeholder_X:0
+      output_node: Predictions:0
+    freezing_poing:
+      frozen_conv: 0
+      frozen_bn: 0
+    output_layer: softmax
+    module: shufflenetv2
+    model_arch: shufflenet_v2_x1_0
+    model_dir: your_deploy_model_dir_not_save_dir
+    model_name: your_deploy_model_not_save_model
+
+  module: general_modeler
+  class_name: GeneralModeler
+  train_mode: fine_tune
+  pre_model_path: your_pretrained_model_dir
+  pre_model_name: your_pretrained_model
+  weight_decay: 0.00004
+  batch_norm_decay: 0.997
+
+data_loader:
+  module: general_data_loader
+  class_name: GeneralDataLoader
+  num_workers: 0
+
+  file_label_separator: ----
+  train_file: /home/rszj-ai/hdd/datasets/flower_102/trainset.txt
+  test_file: /home/rszj-ai/hdd/datasets/flower_102/testset.txt
+  train_image_root_dir: /home/rszj-ai/hdd/datasets/flower_102
+  test_image_root_dir: /home/rszj-ai/hdd/datasets/flower_102
+
+  sample_rate: 1.0
+  data_augmentor:
+    aug_method: aug_aligned
+    max_method_num: 3
+    mixup:
+      enable: true
+      mixup_aug_method: aug_all
+      mixup_max_method_num: 2
+      lowerp: 0.9
+
+    industry:
+      enable: false
+      product_type: 1
+
+trainer:
+  module: general_trainer
+  class_name: GeneralTrainer
+  num_epochs: 50
+  start_epoch: 1
+  batch_size: [32]
+
+evaluator:
+  trainset_evaluate: false
+  testset_evaluate: true
+  batch_size: 32
+  num_workers: 0
+  every_evaluate_epoch: 1
+  evaluate_before_train: false
+  metrics:
+    fn: ["accuracy"]
+
+losser:
+  fn: [ {"name":  "cross_entropy", "weight":  1.0},
+        {"name":  "norm_l2", "weight":  0.000001},
+  ]
+
+optimizer:
+  type: adam
+  weight_decay: 0.0001
+
+gpu_setter:
+  gpu_parallel: dp
+  gpu_id: "1"
+  gpu_rate: 0.95
+
+lr_scheduler:
+  lr_init: 0.001
+  lr_decay_type: cosineannealing
+  lr_decay_epochs: 50
+  lr_decay_rate: 0.5
+
+saver:
+  save_dir: your_model_save_dir
+  save_name: your_model_save_name
+
+logger:
+  module: general_logger
+  class_name: GeneralLogger
+  save_dir: logs
+  log_step: 10
+  printer:
+    print_step: 10
+  use_printf: true
+
+visualizer:
+  is_visualized: false
+  show_img_step: 10
+
+system_database:
+  root_dir: /vismarty/application/input
+  task_id: 0

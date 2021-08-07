@@ -1,57 +1,85 @@
-# coding=utf-8
-import argparse
-import textwrap
+#coding:utf-8
+import os
+import sys
 import time
-import os, sys
-sys.path.append(os.path.dirname(__file__))
-from utils.config import process_config, check_config_dict
-from utils.logger import ExampleLogger
-from trainers.example_model import ExampleModel
-from trainers.example_trainer import ExampleTrainer
-from data_loader.dataset import get_data_loader
+__dir__ = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, __dir__)
+sys.path.insert(0, os.path.dirname(__dir__))
+import importlib
+PROJ_NAME = os.path.basename(__dir__)
+utils = importlib.import_module('{}.utils.utils'.format(PROJ_NAME))
 
-config = process_config(os.path.join(os.path.dirname(__file__), 'configs', 'config.json'))
 
-class ImageClassificationPytorch:
-    def __init__(self, config):
-        gpu_id = config['gpu_id']
-        os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-        os.environ["CUDA_VISIBLE_DEVICES"] = gpu_id
-        check_config_dict(config)
-        self.config = config
+
+class AiImageCls:
+    def __init__(self, cfg_path, sysDB=None):
+        self.proj_name = PROJ_NAME
+        self.cfg = self.cfg_reader(cfg_path)
+        self.sysDB = sysDB
+        self.use_dp = False
+        self.use_ddp = False
         self.init()
 
-
     def init(self):
-        # create net
-        self.model = ExampleModel(self.config)
-        # load
-        self.model.load()
-        # create your data generator
-        self.train_loader, self.test_loader = get_data_loader(self.config)
-        # create logger
-        self.logger = ExampleLogger(self.config)
-        # create trainer and path all previous components to it
-        self.trainer = ExampleTrainer(self.model, self.train_loader, self.test_loader, self.config, self.logger)
+        gpu_num = str(self.cfg["gpu_setter"]['gpu_id'])
+        os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"  # see issue #152
+        os.environ["CUDA_VISIBLE_DEVICES"] = gpu_num
 
+        if self.cfg['gpu_setter']['gpu_parallel'].lower() == 'ddp':
+            pass
+
+        elif self.cfg['gpu_setter']['gpu_parallel'].lower() == 'dp':
+            if len(utils.gpus_str_to_list(gpu_num)) > 1:
+                self.use_dp = True
+                pass
+        else:
+            pass
+
+        # create logger
+        # self.logger = utils.get_instance("{}.logger".format(self.proj_name), self.cfg, self.cfg, self.sysDB)
+        self.logger = None
+
+        # create your data generator
+        self.dataloader = utils.get_instance("{}.data_loader".format(self.proj_name), self.cfg, self.logger, self.cfg, self.sysDB)
+        # convert decay_epoch to decat_step
+        self.cfg["lr_scheduler"]["lr_decay_epochs"] = len(self.dataloader.train_loader) * max(
+            self.cfg["lr_scheduler"]["lr_decay_epochs"], 1)
+        # create instance of the model you want
+        self.modeler = utils.get_instance("{}.modeler".format(self.proj_name), self.cfg, self.logger, self.cfg, self.sysDB)
+        if self.use_dp:
+            pass
+
+        # create trainer and path all previous components to it
+        self.trainer = utils.get_instance("{}.trainer".format(self.proj_name), self.cfg, self.logger, self.cfg,
+                                    self.dataloader, self.modeler, self.sysDB)
+
+        if self.use_ddp:
+            pass
 
     def run(self):
-        # here you train your model
-        self.trainer.train()
-
+        self.trainer.run()
 
     def close(self):
-        # close
-        self.logger.close()
+        raise NotImplementedError
 
-
-def main():
-    imageClassificationPytorch = ImageClassificationPytorch(config)
-    imageClassificationPytorch.run()
-    imageClassificationPytorch.close()
+    def cfg_reader(self, cfg_path):
+        """
+        .yml. .yaml or .json
+        """
+        cfg = utils.cfg_reader(cfg_path)
+        return cfg
 
 
 if __name__ == '__main__':
+    import argparse
+
+    DEFAULT_CONFIG_PATH = './configs/config.yml' # yml, yaml or json
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', "--config", type=str, help='Assign the config path.', default=DEFAULT_CONFIG_PATH)
+    args = parser.parse_args()
+    cfg_path = os.path.abspath(os.path.expanduser(args.config))
+    if not os.path.exists(cfg_path):
+        raise FileNotFoundError('{} is not existed.'.format(cfg_path))
 
     now = time.strftime('%Y-%m-%d | %H:%M:%S', time.localtime(time.time()))
 
@@ -61,7 +89,9 @@ if __name__ == '__main__':
     print('                    Now start ...')
     print('----------------------------------------------------------------------')
 
-    main()
+    executor = AiImageCls(cfg_path=cfg_path)
+    executor.run()
+    # executor.close()
 
     print('----------------------------------------------------------------------')
     print('                      All Done!')
