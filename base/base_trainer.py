@@ -1,12 +1,13 @@
 # coding=utf-8
+import os
+__dir__ = os.path.dirname(os.path.abspath(__file__))
+PROJ_NAME = os.path.basename(os.path.dirname(__dir__))
 
 class BaseTrainer:
-    def __init__(self, logger, cfg, dataloader, modeler, sysDB):
-        self.logger = logger
+    def __init__(self, cfg, args):
         self.cfg = cfg
-        self.dataloader = dataloader
-        self.modeler = modeler
-        self.sysDB = sysDB
+        self.args = args
+        self.proj_name = PROJ_NAME
 
     def run(self):
         """

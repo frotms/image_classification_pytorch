@@ -10,6 +10,8 @@
   "modeler": {
 
     "model": {
+      "fp16": false,
+      "use_model_ema": false,
       "num_classes": 2,
       "labels": [],
       "mean": 128.0,

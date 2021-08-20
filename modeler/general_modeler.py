@@ -10,11 +10,11 @@ from ..base.base_modeler import BaseModeler
 from ..utils import utils, pt_utils
 
 import torch
+from torch.nn.parallel import DistributedDataParallel as DDP
 
 class GeneralModeler(BaseModeler):
-    def __init__(self, logger, cfg, sysDB):
+    def __init__(self, logger, cfg):
         super(GeneralModeler, self).__init__(logger, cfg)
-        self.sysDB = sysDB
         self.losses = []
         self.use_gpu = pt_utils.cuda_is_available()
         self.device_count = pt_utils.cuda_device_count()
@@ -24,11 +24,8 @@ class GeneralModeler(BaseModeler):
 
         # load weights here
 
-        if self.use_gpu:
-            self.net.cuda()
-
-        if self.device_count > 1:
-            self.net = torch.nn.DataParallel(self.net)
+        # if self.use_gpu:
+        #     self.net.cuda()
 
     def build_model(self):
         output_type = self.cfg['modeler']['model']['output_layer']

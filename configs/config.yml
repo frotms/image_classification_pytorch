@@ -6,6 +6,8 @@ info:
 
 modeler:
   model:
+    fp16: false
+    use_model_ema: false
     num_classes: 102
     labels: []
     mean: 128.0
@@ -70,12 +72,12 @@ trainer:
   class_name: GeneralTrainer
   num_epochs: 50
   start_epoch: 1
-  batch_size: [32]
+  batch_size: [32,32]
 
 evaluator:
   trainset_evaluate: false
   testset_evaluate: true
-  batch_size: 32
+  batch_size: [32]
   num_workers: 0
   every_evaluate_epoch: 1
   evaluate_before_train: false
@@ -92,8 +94,7 @@ optimizer:
   weight_decay: 0.0001
 
 gpu_setter:
-  gpu_parallel: dp
-  gpu_id: "1"
+  gpu_id: "0"
   gpu_rate: 0.95
 
 lr_scheduler:

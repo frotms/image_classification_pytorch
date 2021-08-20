@@ -6,20 +6,34 @@ import numpy as np
 import cv2
 import random
 import time
-
+import uuid
 import torch
 from PIL import Image
 from collections import OrderedDict
 from ..base.base_data_loader import BaseDataLoader
 from .data_processor import DataProcessor
 from ..utils import utils
-
+from .samplers.distributed_sampler import InferenceSampler
 from torch.utils.data import Dataset, DataLoader, RandomSampler
+from ..utils.dist import (
+    get_local_rank,
+    get_rank,
+    get_local_size,
+    get_world_size,
+    synchronize,
 
+)
+
+def worker_init_reset_seed(worker_id):
+    seed = uuid.uuid4().int % 2**32
+    random.seed(seed)
+    torch.set_rng_state(torch.manual_seed(seed).get_state())
+    np.random.seed(seed)
 
 class GeneralDataLoader(BaseDataLoader):
-    def __init__(self, logger, cfg=None, sysDB=None):
-        super(GeneralDataLoader, self).__init__(logger, cfg, sysDB)
+    def __init__(self, logger, cfg=None, is_distributed=False):
+        super(GeneralDataLoader, self).__init__(logger, cfg, is_distributed)
+        self.local_rank = get_local_rank()
         self.init()
 
     def init(self):
@@ -27,35 +41,45 @@ class GeneralDataLoader(BaseDataLoader):
         train_gt_list = self._get_groundtruth_from_txt(self.cfg["data_loader"]["train_image_root_dir"],
                                                        self.cfg["data_loader"]["train_file"],
                                                        self.cfg["data_loader"]["file_label_separator"])
-        self.train_dataset = DefineDataset(self.logger, self.cfg, train_gt_list, transform=None, is_data_aug=True,
-                                           sysDB=self.sysDB)
-        use_balanced_sampler = False
+        self.train_dataset = DefineDataset(self.logger, self.cfg, train_gt_list, transform=None, is_data_aug=True)
+        # use_balanced_sampler = False
+        # batch_size = sum(self.cfg["trainer"]["batch_size"])
+        # if use_balanced_sampler:
+        #     raise NotImplementedError
+        # else:
+        #     num_samples = int(len(self.train_dataset) * self.cfg["data_loader"]["sample_rate"])
+        #     if num_samples < batch_size:
+        #         self.logger.error("sample_rate is too small to use a batch-processing")
+        #         raise ValueError("sample_rate is too small to use a batch-processing")
+        #     _sampler = RandomSampler(self.train_dataset, num_samples=num_samples, replacement=True)
+
         batch_size = sum(self.cfg["trainer"]["batch_size"])
-        if use_balanced_sampler:
-            raise NotImplementedError
-        else:
-            num_samples = int(len(self.train_dataset) * self.cfg["data_loader"]["sample_rate"])
-            if num_samples < batch_size:
-                self.logger.error("sample_rate is too small to use a batch-processing")
-                raise ValueError("sample_rate is too small to use a batch-processing")
-            _sampler = RandomSampler(self.train_dataset, num_samples=num_samples, replacement=True)
+        if self.is_distributed:
+            batch_size = batch_size // get_world_size()
+
+        # Partition dataset among workers using DistributedSampler
+        _sampler = torch.utils.data.distributed.DistributedSampler(dataset=self.train_dataset,
+                                                                   num_replicas=get_world_size(),
+                                                                   rank=get_local_rank(),
+                                                                   shuffle=True,
+                                                                   drop_last=True,
+                                                                   )
 
         train_alignCollate = AlignCollate(cfg=self.cfg, is_training=True)
+
+        dataloader_kwargs = {"batch_size": batch_size,
+                             "num_workers": self.cfg['data_loader']['num_workers'],
+                             "collate_fn": train_alignCollate,
+                             "pin_memory": True,
+                             }
+        dataloader_kwargs["sampler"] = _sampler
+
+        # Make sure each process has different random seed, especially for 'fork' method.
+        # Check https://github.com/pytorch/pytorch/issues/63311 for more details.
+        dataloader_kwargs["worker_init_fn"] = worker_init_reset_seed
+
         self.train_loader = DataLoader(dataset=self.train_dataset,
-                                       batch_size=batch_size,
-                                       shuffle=False,
-                                       sampler=_sampler,
-                                       batch_sampler=None,
-                                       num_workers=self.cfg['data_loader']['num_workers'],
-                                       collate_fn=train_alignCollate,
-                                       pin_memory=False,
-                                       drop_last=True,
-                                       timeout=0,
-                                       worker_init_fn=None,
-                                       multiprocessing_context=None,
-                                       generator=None,
-                                       prefetch_factor=2,
-                                       persistent_workers=False
+                                       **dataloader_kwargs
                                        )
 
 
@@ -63,22 +87,27 @@ class GeneralDataLoader(BaseDataLoader):
         test_alignCollate = AlignCollate(cfg=self.cfg, is_training=False)
         if self.cfg["evaluator"]["trainset_evaluate"]:
             self.evaluate_train_dataset = DefineDataset(self.logger, self.cfg, train_gt_list, transform=None,
-                                                        is_data_aug=False, sysDB=self.sysDB)
+                                                        is_data_aug=False)
+
+            if self.is_distributed:
+                batch_size = sum(self.cfg["evaluator"]["batch_size"]) // get_world_size()
+                sampler = torch.utils.data.distributed.DistributedSampler(
+                    self.train_dataset, shuffle=False, drop_last=False,
+                )
+            else:
+                batch_size = sum(self.cfg["evaluator"]["batch_size"])
+                sampler = torch.utils.data.SequentialSampler(self.train_dataset)
+
+            dataloader_kwargs = {"batch_size": batch_size,
+                                 "shuffle": False,
+                                 "num_workers": self.cfg['evaluator']['num_workers'],
+                                 "pin_memory": True,
+                                 "sampler": sampler,
+                                 "collate_fn": test_alignCollate,
+                                 "drop_last": False,
+                                 }
             self.evaluate_train_loader = DataLoader(dataset=self.train_dataset,
-                                                    batch_size=self.cfg["evaluator"]["batch_size"],
-                                                    shuffle=False,
-                                                    sampler=None,
-                                                    batch_sampler=None,
-                                                    num_workers=self.cfg['evaluator']['num_workers'],
-                                                    collate_fn=test_alignCollate,
-                                                    pin_memory=False,
-                                                    drop_last=False,
-                                                    timeout=0,
-                                                    worker_init_fn=None,
-                                                    multiprocessing_context=None,
-                                                    generator=None,
-                                                    prefetch_factor=2,
-                                                    persistent_workers=False
+                                                    **dataloader_kwargs
                                                     )
 
         # evaluate test dataset
@@ -88,22 +117,26 @@ class GeneralDataLoader(BaseDataLoader):
                                                           self.cfg["data_loader"]["file_label_separator"])
 
             self.evaluate_test_dataset = DefineDataset(self.logger, self.cfg, test_gt_list, transform=None,
-                                                       is_data_aug=False, sysDB=self.sysDB)
+                                                       is_data_aug=False)
+            if self.is_distributed:
+                batch_size = sum(self.cfg["evaluator"]["batch_size"]) // get_world_size()
+                # torch.utils.data.distributed.DistributedSampler cannot work when len(dataset) is odd
+                # here use InferenceSampler
+                sampler = InferenceSampler(size=len(self.evaluate_test_dataset))
+            else:
+                batch_size = sum(self.cfg["evaluator"]["batch_size"])
+                sampler = torch.utils.data.SequentialSampler(self.evaluate_test_dataset)
+            print(batch_size, get_world_size())
+            dataloader_kwargs = {"batch_size": batch_size,
+                                 "shuffle": False,
+                                 "num_workers": self.cfg['evaluator']['num_workers'],
+                                 "pin_memory": True,
+                                 "sampler": sampler,
+                                 "collate_fn": test_alignCollate,
+                                 "drop_last": False,
+                                 }
             self.evaluate_test_loader = DataLoader(dataset=self.evaluate_test_dataset,
-                                                   batch_size=self.cfg["evaluator"]["batch_size"],
-                                                   shuffle=False,
-                                                   sampler=None,
-                                                   batch_sampler=None,
-                                                   num_workers=self.cfg['evaluator']['num_workers'],
-                                                   collate_fn=test_alignCollate,
-                                                   pin_memory=False,
-                                                   drop_last=False,
-                                                   timeout=0,
-                                                   worker_init_fn=None,
-                                                   multiprocessing_context=None,
-                                                   generator=None,
-                                                   prefetch_factor=2,
-                                                   persistent_workers=False
+                                                   **dataloader_kwargs,
                                                    )
 
 
@@ -198,4 +231,5 @@ class AlignCollate:
         onehot_label = np.array(onehot_label, dtype=np.float32)
         image = np.transpose(image, (0,3,1,2))
         return torch.from_numpy(image), torch.from_numpy(label), torch.from_numpy(onehot_label)
+        # return image, label, onehot_label
 
